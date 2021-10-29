@@ -17,4 +17,9 @@ public abstract class FerriteCoreImmutableMapAccess<K, V> extends ImmutableMap<K
 
     @Override
     public abstract ImmutableSet<K> createKeySet();
+
+    @Override
+    ImmutableCollection<V> createValues() {
+      return new ImmutableMapValues<K, V>(this);
+    }
 }

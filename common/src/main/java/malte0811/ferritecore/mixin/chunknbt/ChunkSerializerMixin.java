@@ -6,12 +6,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.TickList;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.chunk.storage.ChunkSerializer;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.ticks.LevelChunkTicks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,12 +39,12 @@ public abstract class ChunkSerializerMixin {
 
     @ModifyArg(
             method = "read",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/chunk/LevelChunk;<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/ChunkPos;Lnet/minecraft/world/level/chunk/ChunkBiomeContainer;Lnet/minecraft/world/level/chunk/UpgradeData;Lnet/minecraft/world/level/TickList;Lnet/minecraft/world/level/TickList;J[Lnet/minecraft/world/level/chunk/LevelChunkSection;Ljava/util/function/Consumer;)V"),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/chunk/LevelChunk;<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/ChunkPos;Lnet/minecraft/world/level/chunk/UpgradeData;Lnet/minecraft/world/ticks/LevelChunkTicks;Lnet/minecraft/world/ticks/LevelChunkTicks;J[Lnet/minecraft/world/level/chunk/LevelChunkSection;Ljava/util/function/Consumer;)V"),
             index = 8
     )
     private static Consumer<LevelChunk> replacePostLoad(
-            Level level, ChunkPos pos, ChunkBiomeContainer biomes, UpgradeData upgradeData, TickList<Block> blockTicks,
-            TickList<Fluid> fluidTicks, long l, LevelChunkSection[] sections, Consumer<LevelChunk> consumer
+            Level level, ChunkPos pos, UpgradeData upgradeData, LevelChunkTicks<Block> blockTicks,
+            LevelChunkTicks<Fluid> fluidTicks, long l, LevelChunkSection[] sections, Consumer<LevelChunk> consumer
     ) {
         CompoundTag strippedNBT = ChunkNBTImpl.getExtractedNBT();
         return levelChunk -> postLoadChunk((ServerLevel) level, strippedNBT, levelChunk);
